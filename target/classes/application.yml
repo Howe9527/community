@@ -32,6 +32,25 @@ spring:
 
       # ���������ڳ��е���С����ʱ��
       min-evictable-idle-time-millis: 300000
+  mail:
+    host: smtp.163.com
+    port: 465
+    username: Xh321082561@163.com
+    password: ZEYRBLDDVINQKDCR
+    protocol: smtps
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          port: 465
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+            fallback: false
+            port: 465
 
 # MyBatis����
 mybatis:
@@ -44,3 +63,4 @@ mybatis:
     map-underscore-to-camel-case: true
     use-generated-keys: true
 
+# MailProperties

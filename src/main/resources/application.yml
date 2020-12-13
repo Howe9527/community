@@ -10,37 +10,57 @@ spring:
     mode: HTML5
 
   datasource:
-    # Êı¾İ¿â·ÃÎÊÅäÖÃ, Ê¹ÓÃdruidÊı¾İÔ´(Ä¬ÈÏÊı¾İÔ´ÊÇHikariDataSource)
+    # ï¿½ï¿½ï¿½İ¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, Ê¹ï¿½ï¿½druidï¿½ï¿½ï¿½ï¿½Ô´(Ä¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½HikariDataSource)
     type: com.alibaba.druid.pool.DruidDataSource
-    #Á´½Ó³ØÅäÖÃ
+    #ï¿½ï¿½ï¿½Ó³ï¿½ï¿½ï¿½ï¿½ï¿½
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://localhost:3306/community?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
       username: root
       password: root
 
-      # Á¬½Ó³ØÅäÖÃ£º´óĞ¡£¬×îĞ¡£¬×î´ó
+      # ï¿½ï¿½ï¿½Ó³ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½Ğ¡ï¿½ï¿½ï¿½ï¿½Ğ¡ï¿½ï¿½ï¿½ï¿½ï¿½
       initial-size: 5
       min-idle: 5
       max-active: 20
 
-      # Á¬½ÓµÈ´ı³¬Ê±Ê±¼ä
+      # ï¿½ï¿½ï¿½ÓµÈ´ï¿½ï¿½ï¿½Ê±Ê±ï¿½ï¿½
       max-wait: 30000
 
-      # ÅäÖÃ¼ì²â¿ÉÒÔ¹Ø±ÕµÄ¿ÕÏĞÁ¬½Ó£¬¼ä¸ôÊ±¼ä
+      # ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½ï¿½ï¿½Ô¹Ø±ÕµÄ¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó£ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½
       time-between-eviction-runs-millis: 60000
 
-      # ÅäÖÃÁ¬½ÓÔÚ³ØÖĞµÄ×îĞ¡Éú´æÊ±¼ä
+      # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú³ï¿½ï¿½Ğµï¿½ï¿½ï¿½Ğ¡ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½
       min-evictable-idle-time-millis: 300000
+  mail:
+    host: smtp.163.com
+    port: 465
+    username: Xh321082561@163.com
+    password: ZEYRBLDDVINQKDCR
+    protocol: smtps
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          port: 465
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+            fallback: false
+            port: 465
 
-# MyBatisÅäÖÃ
+# MyBatisï¿½ï¿½ï¿½ï¿½
 mybatis:
-  # ÅäÖÃ±ğÃû
+  # ï¿½ï¿½ï¿½Ã±ï¿½ï¿½ï¿½
   type-aliases-package: com.howe.community.pojo
-  # ÅäÖÃXMLÉ¨ÃèµØÖ·
+  # ï¿½ï¿½ï¿½ï¿½XMLÉ¨ï¿½ï¿½ï¿½Ö·
   mapper-locations: classpath:mapper/*.xml
-  # ÅäÖÃÆôÓÃÍÕ·åÃüÃû·½Ê½
+  # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê½
   configuration:
     map-underscore-to-camel-case: true
     use-generated-keys: true
 
+# MailProperties
