@@ -1,3 +1,5 @@
+var CONTENT_PATH = "/community";
+
 window.alert = function(message) {
 	if(!$(".alert-box").length) {
 		$("body").append(

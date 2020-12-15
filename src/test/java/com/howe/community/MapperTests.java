@@ -1,8 +1,10 @@
 package com.howe.community;
 
 import com.howe.community.dao.DiscussPostMapper;
+import com.howe.community.dao.LoginTicketMapper;
 import com.howe.community.dao.UserMapper;
 import com.howe.community.pojo.DiscussPost;
+import com.howe.community.pojo.LoginTicket;
 import com.howe.community.pojo.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,5 +73,28 @@ public class MapperTests {
 
         int i = discussPostMapper.selectDiscussPostRows(149);
         System.out.println(i);
+    }
+
+    @Autowired
+    LoginTicketMapper loginTicketMapper;
+
+    @Test
+    public void testInsertLoginTicket(){
+        LoginTicket loginTicket = new LoginTicket();
+        loginTicket.setUserId(101);
+        loginTicket.setTicket("acb");
+        loginTicket.setStatus(0);
+        loginTicket.setExpired(new Date(System.currentTimeMillis() + 1000 * 60 * 10));
+        int i = loginTicketMapper.insertLoginTicket(loginTicket);
+        System.out.println(i);
+    }
+
+    @Test
+    public void testSelectLoginTicket(){
+        LoginTicket loginTicket = loginTicketMapper.selectByTicket("acb");
+        System.out.println(loginTicket);
+
+        loginTicketMapper.updateStatus("acb", 1);
+        System.out.println(loginTicket);
     }
 }

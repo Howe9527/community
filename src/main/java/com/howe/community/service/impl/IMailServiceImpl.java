@@ -63,7 +63,7 @@ public class IMailServiceImpl implements IMailService {
             //邮件发送人
             messageHelper.setFrom(from);
             //邮件接收人
-            messageHelper.setTo(subject);
+            messageHelper.setTo(to);
             //邮件主题
             message.setSubject(subject);
             //邮件内容，html格式
