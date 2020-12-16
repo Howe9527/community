@@ -1,5 +1,6 @@
 package com.howe.community.config;
 
+import com.howe.community.controller.interceptor.LoginRequiredInterceptor;
 import com.howe.community.controller.interceptor.LoginTicketInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -15,9 +16,15 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Autowired
     LoginTicketInterceptor loginTicketInterceptor;
 
+    @Autowired
+    LoginRequiredInterceptor loginRequiredInterceptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginTicketInterceptor)
+                .excludePathPatterns("/css/*.css", "/js/*.js", "/img/*.png", "/img/*.jpg", "/img/*.jpeg");
+
+        registry.addInterceptor(loginRequiredInterceptor)
                 .excludePathPatterns("/css/*.css", "/js/*.js", "/img/*.png", "/img/*.jpg", "/img/*.jpeg");
     }
 }

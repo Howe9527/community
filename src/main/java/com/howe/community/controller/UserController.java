@@ -1,5 +1,6 @@
 package com.howe.community.controller;
 
+import com.howe.community.annotation.LoginRequired;
 import com.howe.community.pojo.User;
 import com.howe.community.service.UserService;
 import com.howe.community.utils.CommunityUtil;
@@ -47,6 +48,7 @@ public class UserController {
     /*
         获取到设置界面的链接
      */
+    @LoginRequired
     @RequestMapping(path = "/setting", method = RequestMethod.GET)
     public String getSettingPage(){
         return "/site/setting";
@@ -55,6 +57,7 @@ public class UserController {
     /*
         上传文件请求的实现
      */
+    @LoginRequired
     @RequestMapping(path = "/upload", method = RequestMethod.POST)
     public String uploadHeader(MultipartFile headerImg, Model model){
 
@@ -117,6 +120,7 @@ public class UserController {
     /*
     修改用户密码
      */
+    @LoginRequired
     @RequestMapping(path = "/changePassword", method = RequestMethod.POST)
     public String changePassword(String oldPassword, String newPassword, String confirmPassword, Model model){
         if (StringUtils.isBlank(oldPassword)){
