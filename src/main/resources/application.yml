@@ -69,3 +69,4 @@ mybatis:
 community:
   path:
     domain: http://localhost:9090
+    upload: e:/IdeaProject/upload
