@@ -13,4 +13,10 @@ public interface DiscussPostService {
     //如果只有一个参数，并且在<if>里面使用，则必须加别名
     int selectDiscussPostRows(@Param("userId") int userId);//借助动态sql
 
+    //添加评论
+    int addDiscussPost(DiscussPost discussPost);
+
+    //帖子详情的查询显示
+    DiscussPost findDiscussPostById(int id);
+
 }
