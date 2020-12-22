@@ -19,4 +19,7 @@ public interface DiscussPostService {
     //帖子详情的查询显示
     DiscussPost findDiscussPostById(int id);
 
+    //在帖子中更新评论数量
+    public int updateCommentCount(int id, int commentCount);
+
 }
