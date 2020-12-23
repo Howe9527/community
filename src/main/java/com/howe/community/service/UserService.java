@@ -10,6 +10,8 @@ public interface UserService {
     //查询用户接口
     User findUserById(int id);
 
+    User findUserByName(String username);
+
     //注册接口
     Map<String, Object> register(User user);
 

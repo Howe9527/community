@@ -2,9 +2,11 @@ package com.howe.community;
 
 import com.howe.community.dao.DiscussPostMapper;
 import com.howe.community.dao.LoginTicketMapper;
+import com.howe.community.dao.MessageMapper;
 import com.howe.community.dao.UserMapper;
 import com.howe.community.pojo.DiscussPost;
 import com.howe.community.pojo.LoginTicket;
+import com.howe.community.pojo.Message;
 import com.howe.community.pojo.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,9 @@ public class MapperTests {
 
     @Autowired
     private DiscussPostMapper discussPostMapper;
+
+    @Autowired
+    private MessageMapper messageMapper;
 
     @Test
     public void testSelectUser(){
@@ -96,5 +101,31 @@ public class MapperTests {
 
         loginTicketMapper.updateStatus("acb", 1);
         System.out.println(loginTicket);
+    }
+
+    @Test
+    public void testSelectLetters(){
+        List<Message> messages = messageMapper.selectConversations(111, 0, 20);
+        for (Message message : messages) {
+            System.out.println(message);
+        }
+
+        System.out.println("-------------------");
+        int count = messageMapper.selectConversationCount(111);
+        System.out.println(count);
+
+        System.out.println("-----------------------");
+        messages = messageMapper.selectLetters("111_112", 0, 10);
+        for (Message message : messages) {
+            System.out.println(message);
+        }
+
+        System.out.println("----------------------");
+        int letterCount = messageMapper.selectLetterCount("111_112");
+        System.out.println(letterCount);
+
+        System.out.println("----------------------");
+        count = messageMapper.selectLetterUnreadCount(131, "111_131");
+        System.out.println(count);
     }
 }
