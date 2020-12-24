@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
  * 在这个Mapper实现类中采用注解实现
  */
 @Repository
-@Mapper
+@Deprecated
 public interface LoginTicketMapper {
 
     @Insert({
