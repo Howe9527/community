@@ -6,6 +6,7 @@ import com.howe.community.pojo.Page;
 import com.howe.community.pojo.User;
 import com.howe.community.service.CommentService;
 import com.howe.community.service.DiscussPostService;
+import com.howe.community.service.LikeService;
 import com.howe.community.service.UserService;
 import com.howe.community.utils.CommunityUtil;
 import com.howe.community.utils.HostHolder;
@@ -34,6 +35,9 @@ public class DiscussPostController {
 
     @Autowired
     private CommentService commentService;
+
+    @Autowired
+    private LikeService likeService;
 
     private static int ENTITY_TYPE_POST = 1;
 
@@ -73,6 +77,12 @@ public class DiscussPostController {
         User user = userService.findUserById(post.getUserId());
         model.addAttribute("user", user);
 
+        // 点赞有关信息
+        long likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_POST, discussPostId);
+        model.addAttribute("likeCount", likeCount);
+        int likeStatus = likeService.findEntityLikeStatus(hostHolder.getUser().getId(), ENTITY_TYPE_POST, discussPostId);
+        model.addAttribute("likeStatus", likeStatus);
+
         // 帖子的评论评论分页显示
         page.setLimit(5);
         page.setPath("/discuss/detail/" + discussPostId);
@@ -85,6 +95,13 @@ public class DiscussPostController {
                 Map<String, Object> commentVo = new HashMap<>();
                 commentVo.put("comment", comment);
                 commentVo.put("user", userService.findUserById(comment.getUserId()));
+
+                // 点赞有关信息
+                likeCount = likeService.findEntityLikeCount(ENTITY_COMMENT, comment.getId());
+                commentVo.put("likeCount", likeCount);
+                likeStatus = likeService.findEntityLikeStatus(hostHolder.getUser().getId(), ENTITY_COMMENT, comment.getId());
+                commentVo.put("likeStatus", likeStatus);
+
                 // 对评论的回复
                 List<Comment> replyList = commentService.findCommentByEntity(ENTITY_COMMENT, comment.getId(), 0, Integer.MAX_VALUE);
                 // 回复VO列表
@@ -98,6 +115,12 @@ public class DiscussPostController {
                         // 回复的目标
                         User target = reply.getTargetId() == 0 ? null : userService.findUserById(reply.getTargetId());
                         replyVo.put("target", target);
+
+                        // 点赞有关信息
+                        likeCount = likeService.findEntityLikeCount(ENTITY_COMMENT, reply.getId());
+                        replyVo.put("likeCount", likeCount);
+                        likeStatus = likeService.findEntityLikeStatus(hostHolder.getUser().getId(), ENTITY_COMMENT, reply.getId());
+                        replyVo.put("likeStatus", likeStatus);
 
                         replyVoList.add(replyVo);
                     }

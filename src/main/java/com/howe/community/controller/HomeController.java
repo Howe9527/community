@@ -4,6 +4,7 @@ import com.howe.community.pojo.DiscussPost;
 import com.howe.community.pojo.Page;
 import com.howe.community.pojo.User;
 import com.howe.community.service.DiscussPostService;
+import com.howe.community.service.LikeService;
 import com.howe.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,9 @@ public class HomeController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private LikeService likeService;
+
     @RequestMapping(path = "/index", method = RequestMethod.GET)
     public String getIndexPage(Model model, Page page){
         //方法调用之前springmvc会自动实例化model和page，并将page注入model
@@ -40,7 +44,12 @@ public class HomeController {
                 map.put("post",post);
                 User user = userService.findUserById(post.getUserId());
                 map.put("user",user);
+                long likeCount = likeService.findEntityLikeCount(1, post.getId());
+                map.put("likeCount", likeCount);
+
                 discussPosts.add(map);
+
+
             }
         }
         model.addAttribute("discussPosts", discussPosts);

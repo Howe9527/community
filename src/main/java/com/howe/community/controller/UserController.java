@@ -2,6 +2,8 @@ package com.howe.community.controller;
 
 import com.howe.community.annotation.LoginRequired;
 import com.howe.community.pojo.User;
+import com.howe.community.service.FollowService;
+import com.howe.community.service.LikeService;
 import com.howe.community.service.UserService;
 import com.howe.community.utils.CommunityUtil;
 import com.howe.community.utils.HostHolder;
@@ -44,6 +46,12 @@ public class UserController {
 
     @Autowired
     private HostHolder hostHolder;
+
+    @Autowired
+    private LikeService likeService;
+
+    @Autowired
+    private FollowService followService;
 
     /*
         获取到设置界面的链接
@@ -145,6 +153,35 @@ public class UserController {
         userService.updatePassword(user.getId(), newPassword);
 
         return "redirect:/logout";
+    }
+
+    // 个人主页
+    @RequestMapping(path = "/profile/{userId}", method = RequestMethod.GET)
+    public String getProfilePage(@PathVariable int userId,Model model){
+        User user = userService.findUserById(userId);
+        if (user == null){
+            throw new RuntimeException("该用户不存在");
+        }
+        //用户信息
+        model.addAttribute("user", user);
+        //用户获赞数量
+        int likeCount = likeService.findUserLikeCount(userId);
+        model.addAttribute("likeCount", likeCount);
+
+        // 查询关注数量
+        long followeeCount = followService.findFolloweeCount(userId, 3);
+        model.addAttribute("followeeCount", followeeCount);
+        // 查询粉丝数量
+        long followerCount = followService.findFollowerCount(3, userId);
+        model.addAttribute("followerCount",followerCount);
+        // 查询是否已关注某个用户
+        boolean hasFollowed = false;
+        if (hostHolder.getUser() != null){
+            hasFollowed = followService.hasFollowed(hostHolder.getUser().getId(),3, userId);
+        }
+        model.addAttribute("hasFollowed",hasFollowed);
+
+        return "/site/profile";
     }
 
 

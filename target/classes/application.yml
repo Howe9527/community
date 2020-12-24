@@ -53,6 +53,11 @@ spring:
             class: javax.net.ssl.SSLSocketFactory
             fallback: false
             port: 465
+  redis:
+    database: 11
+    host: localhost
+    port: 6379
+
 
 # MyBatis����
 mybatis:
@@ -70,3 +75,4 @@ community:
   path:
     domain: http://localhost:9090
     upload: e:/IdeaProject/upload
+
