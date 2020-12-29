@@ -27,4 +27,17 @@ public interface MessageService {
     // 更改消息展示的状态
     int changeStatus(List<Integer> ids);
 
+    //  查询某一个主题最新的通知
+    Message findLatestNotice(int userId, String topic);
+
+    // 查询某个主题所包含的通知的数量
+    int findNoticeCount(int userId, String topic);
+
+    // 未读的通知的数量
+    int findUnreadNoticeCount(int userId, String topic);
+
+    // 查询某个主题所包含的通知列表
+    List<Message> findNotices(int userId, String topic, int offset, int limit);
+
+
 }

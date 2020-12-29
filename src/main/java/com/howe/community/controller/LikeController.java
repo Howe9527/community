@@ -1,5 +1,7 @@
 package com.howe.community.controller;
 
+import com.howe.community.event.EventProducer;
+import com.howe.community.pojo.Event;
 import com.howe.community.pojo.User;
 import com.howe.community.service.LikeService;
 import com.howe.community.utils.CommunityUtil;
@@ -22,9 +24,12 @@ public class LikeController {
     @Autowired
     private HostHolder hostHolder;
 
+    @Autowired
+    private EventProducer eventProducer;
+
     @RequestMapping(path = "/like", method = RequestMethod.POST)
     @ResponseBody
-    public String like(int entityType, int entityId, int entityUserId){
+    public String like(int entityType, int entityId, int entityUserId, Integer postId){
         User user = hostHolder.getUser();
         // 点赞实现
         likeService.like(user.getId(), entityType, entityId, entityUserId);
@@ -37,6 +42,18 @@ public class LikeController {
         Map<String, Object> map = new HashMap<>();
         map.put("likeCount", likeCount);
         map.put("likeStatus", likeStatus);
+
+        // 触发点赞事件
+        if (likeStatus == 1){
+            Event event = new Event()
+                    .setTopic("like")
+                    .setUserId(hostHolder.getUser().getId())
+                    .setEntityType(entityType)
+                    .setEntityId(entityId)
+                    .setEntityUserId(entityUserId)
+                    .setData("postId", postId);
+            eventProducer.fireEvent(event);
+        }
 
         return CommunityUtil.getJSONString(0,"success", map);
     }

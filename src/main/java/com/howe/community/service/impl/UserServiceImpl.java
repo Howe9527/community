@@ -1,6 +1,5 @@
 package com.howe.community.service.impl;
 
-import com.howe.community.dao.LoginTicketMapper;
 import com.howe.community.dao.UserMapper;
 import com.howe.community.pojo.LoginTicket;
 import com.howe.community.pojo.User;

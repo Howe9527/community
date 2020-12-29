@@ -11,6 +11,8 @@ public interface CommentService {
     int findCountByEntity(int entityType, int entityId);
 
     // 增加评论的业务
-    public int addComment(Comment comment);
+    int addComment(Comment comment);
+
+    Comment findCommentById(int id);
 
 }

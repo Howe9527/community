@@ -1,5 +1,7 @@
 package com.howe.community.controller;
 
+import com.howe.community.event.EventProducer;
+import com.howe.community.pojo.Event;
 import com.howe.community.pojo.Page;
 import com.howe.community.pojo.User;
 import com.howe.community.service.FollowService;
@@ -29,12 +31,25 @@ public class FollowController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private EventProducer eventProducer;
+
     @RequestMapping(path = "/follow", method = RequestMethod.POST)
     @ResponseBody
     public String follow(int entityType, int entityId){
         User user = hostHolder.getUser();
 
         followService.follow(user.getId(), entityType, entityId);
+
+        // 触发关注事件
+        Event event = new Event()
+                .setTopic("follow")
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityType(entityType)
+                .setEntityId(entityId)
+                .setEntityUserId(entityId);
+        eventProducer.fireEvent(event);
+
         return CommunityUtil.getJSONString(0,"已关注");
     }
 
