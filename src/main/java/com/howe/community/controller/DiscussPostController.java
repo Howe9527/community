@@ -1,9 +1,7 @@
 package com.howe.community.controller;
 
-import com.howe.community.pojo.Comment;
-import com.howe.community.pojo.DiscussPost;
-import com.howe.community.pojo.Page;
-import com.howe.community.pojo.User;
+import com.howe.community.event.EventProducer;
+import com.howe.community.pojo.*;
 import com.howe.community.service.CommentService;
 import com.howe.community.service.DiscussPostService;
 import com.howe.community.service.LikeService;
@@ -39,6 +37,9 @@ public class DiscussPostController {
     @Autowired
     private LikeService likeService;
 
+    @Autowired
+    private EventProducer eventProducer;
+
     private static int ENTITY_TYPE_POST = 1;
 
     private static int ENTITY_COMMENT = 2;
@@ -61,6 +62,14 @@ public class DiscussPostController {
         post.setContent(content);
         post.setCreateTime(new Date());
         discussPostService.addDiscussPost(post);
+
+        // 触发发帖事件
+        Event event = new Event()
+                .setTopic("public")
+                .setUserId(user.getId())
+                .setEntityType(ENTITY_TYPE_POST)
+                .setEntityId(post.getId());
+        eventProducer.fireEvent(event);
 
         //报错的清空在将来另外处理
         return CommunityUtil.getJSONString(0,"发布成功");

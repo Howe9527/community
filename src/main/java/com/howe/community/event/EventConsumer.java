@@ -1,8 +1,11 @@
 package com.howe.community.event;
 
 import com.alibaba.fastjson.JSONObject;
+import com.howe.community.pojo.DiscussPost;
 import com.howe.community.pojo.Event;
 import com.howe.community.pojo.Message;
+import com.howe.community.service.DiscussPostService;
+import com.howe.community.service.ElasticsearchService;
 import com.howe.community.service.MessageService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
@@ -25,6 +28,12 @@ public class EventConsumer {
 
     @Autowired
     private MessageService messageService;
+
+    @Autowired
+    private DiscussPostService postService;
+
+    @Autowired
+    private ElasticsearchService elasticsearchService;
 
     // 处理接收到的评论消息
     @KafkaListener(topics = {TOPIC_COMMENT, TOPIC_LIKE, TOPIC_FOLLOW})
@@ -59,6 +68,25 @@ public class EventConsumer {
         }
         message.setContent(JSONObject.toJSONString(content));
         messageService.addMessage(message);
+    }
+
+    // 消费发帖事件
+    @KafkaListener(topics = "publish")
+    public void handlePublishMessage(ConsumerRecord record){
+        if (record == null || record.value() == null){
+            logger.error("消息的内容为空");
+            return;
+        }
+
+        Event event = JSONObject.parseObject(record.value().toString(), Event.class);
+        if (event == null){
+            logger.error("消息格式错误");
+            return;
+        }
+
+        DiscussPost post = postService.findDiscussPostById(event.getEntityId());
+        elasticsearchService.saveDiscussPost(post);
+
     }
 
 }

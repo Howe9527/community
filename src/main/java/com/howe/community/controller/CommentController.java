@@ -52,8 +52,18 @@ public class CommentController {
             Comment target = commentService.findCommentById(comment.getEntityId());
             event.setEntityUserId(target.getUserId());
         }
-
         eventProducer.fireEvent(event);
+
+        if (comment.getEntityType() == 1){
+            // 触发发帖事件
+            event = new Event()
+                    .setTopic("public")
+                    .setUserId(comment.getUserId())
+                    .setEntityType(1)
+                    .setEntityId(discussPostId);
+            eventProducer.fireEvent(event);
+        }
+
 
         return "redirect:/discuss/detail/" + discussPostId;
     }
