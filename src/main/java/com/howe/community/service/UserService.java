@@ -2,7 +2,9 @@ package com.howe.community.service;
 
 import com.howe.community.pojo.LoginTicket;
 import com.howe.community.pojo.User;
+import org.springframework.security.core.GrantedAuthority;
 
+import java.util.Collection;
 import java.util.Map;
 
 public interface UserService {
@@ -29,5 +31,10 @@ public interface UserService {
     int updatePassword(int userId, String password);
 
     int updateHeader(int userId, String headerUrl);
+
+    /**
+     * 用户权限方法实现
+     */
+    Collection<? extends GrantedAuthority> getAuthorities(int userId);
 
 }
