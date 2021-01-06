@@ -37,4 +37,10 @@ public class RedisTests {
         System.out.println(operations.get());
     }
 
+    @Test
+    public void testHyperLogLog(){
+        String redisKey = "test:hll:01";
+
+    }
+
 }

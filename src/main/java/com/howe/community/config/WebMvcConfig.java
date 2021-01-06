@@ -1,5 +1,6 @@
 package com.howe.community.config;
 
+import com.howe.community.controller.interceptor.DataCountInterceptor;
 import com.howe.community.controller.interceptor.LoginRequiredInterceptor;
 import com.howe.community.controller.interceptor.LoginTicketInterceptor;
 import com.howe.community.controller.interceptor.MessageInterceptor;
@@ -23,6 +24,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Autowired
     private  MessageInterceptor messageInterceptor;
 
+    @Autowired
+    private DataCountInterceptor dataCountInterceptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginTicketInterceptor)
@@ -32,6 +36,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/css/*.css", "/js/*.js", "/img/*.png", "/img/*.jpg", "/img/*.jpeg");*/
 
         registry.addInterceptor(messageInterceptor)
+                .excludePathPatterns("/css/*.css", "/js/*.js", "/img/*.png", "/img/*.jpg", "/img/*.jpeg");
+
+        registry.addInterceptor(dataCountInterceptor)
                 .excludePathPatterns("/css/*.css", "/js/*.js", "/img/*.png", "/img/*.jpg", "/img/*.jpeg");
     }
 }

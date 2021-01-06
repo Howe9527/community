@@ -8,7 +8,9 @@ import com.howe.community.service.LikeService;
 import com.howe.community.service.UserService;
 import com.howe.community.utils.CommunityUtil;
 import com.howe.community.utils.HostHolder;
+import com.howe.community.utils.RedisKeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,6 +41,9 @@ public class DiscussPostController {
 
     @Autowired
     private EventProducer eventProducer;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     private static int ENTITY_TYPE_POST = 1;
 
@@ -71,6 +76,10 @@ public class DiscussPostController {
                 .setEntityId(post.getId());
         eventProducer.fireEvent(event);
 
+        // 计算帖子分数
+        String redisKey = RedisKeyUtil.getPostScoreKey();
+        redisTemplate.opsForSet().add(redisKey, post.getId());
+
         //报错的清空在将来另外处理
         return CommunityUtil.getJSONString(0,"发布成功");
     }
@@ -86,10 +95,17 @@ public class DiscussPostController {
         User user = userService.findUserById(post.getUserId());
         model.addAttribute("user", user);
 
+        User hostUser = hostHolder.getUser();
+        Integer hostUserId = null;
+        if (hostUser != null){
+            hostUserId = hostUser.getId();
+        }
+
         // 点赞有关信息
         long likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_POST, discussPostId);
         model.addAttribute("likeCount", likeCount);
-        int likeStatus = likeService.findEntityLikeStatus(hostHolder.getUser().getId(), ENTITY_TYPE_POST, discussPostId);
+
+        int likeStatus = likeService.findEntityLikeStatus(hostUserId, ENTITY_TYPE_POST, discussPostId);
         model.addAttribute("likeStatus", likeStatus);
 
         // 帖子的评论评论分页显示
@@ -108,7 +124,7 @@ public class DiscussPostController {
                 // 点赞有关信息
                 likeCount = likeService.findEntityLikeCount(ENTITY_COMMENT, comment.getId());
                 commentVo.put("likeCount", likeCount);
-                likeStatus = likeService.findEntityLikeStatus(hostHolder.getUser().getId(), ENTITY_COMMENT, comment.getId());
+                likeStatus = likeService.findEntityLikeStatus(hostUserId, ENTITY_COMMENT, comment.getId());
                 commentVo.put("likeStatus", likeStatus);
 
                 // 对评论的回复
@@ -128,7 +144,7 @@ public class DiscussPostController {
                         // 点赞有关信息
                         likeCount = likeService.findEntityLikeCount(ENTITY_COMMENT, reply.getId());
                         replyVo.put("likeCount", likeCount);
-                        likeStatus = likeService.findEntityLikeStatus(hostHolder.getUser().getId(), ENTITY_COMMENT, reply.getId());
+                        likeStatus = likeService.findEntityLikeStatus(hostUserId, ENTITY_COMMENT, reply.getId());
                         replyVo.put("likeStatus", likeStatus);
 
                         replyVoList.add(replyVo);
@@ -145,6 +161,70 @@ public class DiscussPostController {
         model.addAttribute("comments", commentVoList);
 
         return "/site/discuss-detail";
+    }
+
+    /**
+     * 置顶帖子
+     * 权限： 版主
+     */
+    @RequestMapping(path = "/top", method = RequestMethod.POST)
+    @ResponseBody
+    public String setTop(int postId){
+        discussPostService.updateType(postId, 1);
+
+        // 触发发帖事件,将帖子的修改过后的状态发布到ES中
+        Event event = new Event()
+                .setTopic("public")
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityType(ENTITY_TYPE_POST)
+                .setEntityId(postId);
+        eventProducer.fireEvent(event);
+
+        return CommunityUtil.getJSONString(0);
+    }
+
+    /**
+     * 加精帖子
+     * 权限： 版主
+     */
+    @RequestMapping(path = "/wonderful", method = RequestMethod.POST)
+    @ResponseBody
+    public String setWonderful(int postId){
+        discussPostService.updateStatus(postId, 1);
+
+        // 触发发帖事件,将帖子的修改过后的状态发布到ES中
+        Event event = new Event()
+                .setTopic("public")
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityType(ENTITY_TYPE_POST)
+                .setEntityId(postId);
+        eventProducer.fireEvent(event);
+
+        // 计算加精的分数
+        String redisKey = RedisKeyUtil.getPostScoreKey();
+        redisTemplate.opsForSet().add(redisKey, postId);
+
+        return CommunityUtil.getJSONString(0);
+    }
+
+    /**
+     * 删除帖子
+     * 权限： 管理员
+     */
+    @RequestMapping(path = "/delete", method = RequestMethod.POST)
+    @ResponseBody
+    public String setDelete(int postId){
+        discussPostService.updateStatus(postId, 2);
+
+        // 将帖子的修改过后的状态发布到ES中,触发删除帖子的事件，将帖子从es中删除
+        Event event = new Event()
+                .setTopic("delete")
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityType(ENTITY_TYPE_POST)
+                .setEntityId(postId);
+        eventProducer.fireEvent(event);
+
+        return CommunityUtil.getJSONString(0);
     }
 
 }

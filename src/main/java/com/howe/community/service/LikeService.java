@@ -9,7 +9,7 @@ public interface LikeService {
     long findEntityLikeCount(int entityType, int entityId);
 
     // 查询某人对实体（帖子或评论）点赞状态
-    int findEntityLikeStatus(int userId, int entityType, int entityId);
+    int findEntityLikeStatus(Integer userId, int entityType, int entityId);
 
     int findUserLikeCount(int userId);
 

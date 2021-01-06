@@ -20,6 +20,15 @@ public interface DiscussPostService {
     DiscussPost findDiscussPostById(int id);
 
     //在帖子中更新评论数量
-    public int updateCommentCount(int id, int commentCount);
+    int updateCommentCount(int id, int commentCount);
+
+    // 修改帖子的类型
+    int updateType(int id, int type);
+
+    // 修改帖子的状态
+    int updateStatus(int id, int status);
+
+    // 修改帖子的分数
+    int updateScore(int id, double score);
 
 }
