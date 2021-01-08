@@ -65,24 +65,6 @@ spring:
       enable-auto-commit: true
       auto-commit-interval: 3000
   # Quartz
-  quartz:
-    job-store-type: jdbc
-    scheduler-name: communityScheduler
-    properties:
-      org:
-        quartz:
-          scheduler:
-            instanceId: AUTO
-          jobStore:
-            class: org.quartz.impl.jdbcjobstore.JobStoreTX
-            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
-            isClustered: true
-          threadPool:
-            #一般使用这个便可
-            class: org.quartz.simpl.SimpleThreadPool
-            #线程数量，不会动态增加
-            threadCount: 10
-            threadPriority: 5
 
 # MyBatis����
 mybatis:

@@ -83,3 +83,10 @@ community:
     domain: http://localhost:9090
     upload: e:/IdeaProject/upload
 
+# actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: *
+        exclude: info, caches
